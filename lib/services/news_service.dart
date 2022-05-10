@@ -10,6 +10,7 @@ class NewsService{
   static Future<List<News>>  getQueryNews(String query) async{
     final dio = Dio();
     try{
+
       final response = await dio.get(Api.searchNewsApi,
           queryParameters: {
             'q': query,
@@ -26,6 +27,7 @@ class NewsService{
       return data;
 
     }on DioError catch (err){
+      print(err);
       return [];
     }
   }
@@ -35,9 +37,10 @@ class NewsService{
  static Future<List<News>>  getNews() async{
     final dio = Dio();
     try{
+      await Future.delayed(Duration(seconds: 2));
       final response = await dio.get(Api.searchNewsApi,
       queryParameters: {
-        'q': 'nasa',
+        'q': 'science',
         'lang':'en'
       },
         options: Options(
@@ -50,6 +53,7 @@ class NewsService{
       final data = (response.data['articles'] as List).map((news) => News.fromJson(news)).toList();
       return data;
     }on DioError catch (err){
+      print(err);
     return [];
     }
   }

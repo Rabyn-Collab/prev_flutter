@@ -40,9 +40,7 @@ class SearchNewsProvider extends StateNotifier<List<News>>{
   }
 
 
-
   Future<void> getData() async {
-    await Future.delayed(Duration(seconds: 2));
     final response = await NewsService.getNews();
     state = response;
   }

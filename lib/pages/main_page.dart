@@ -14,6 +14,7 @@ class MainPage extends StatelessWidget {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           backgroundColor: Colors.white,
           bottom: TabBar(
@@ -47,19 +48,27 @@ class MainPage extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Column(
                   children: [
-                    TextFormField(
-                      decoration: InputDecoration(
-                        hintText: 'Search News',
-                        contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                        border: OutlineInputBorder()
-                      ),
+                    Consumer(
+                      builder: (context, ref, child) {
+                        return TextFormField(
+                          onFieldSubmitted: (val) {
+                            ref.read(searchNewsProvider.notifier).getQuery(val);
+                          },
+                          decoration: InputDecoration(
+                              hintText: 'Search News',
+                              contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 10),
+                              border: OutlineInputBorder()
+                          ),
+                        );
+                      }
                     ),
+                    SizedBox(height: 10,),
                     Container(
-                      height: 200,
+                      height: 350,
                       child: Consumer(
                           builder: (context, ref, child) {
                             final newsData = ref.watch(searchNewsProvider);
-                            print(newsData);
                             if (newsData.isEmpty) {
                               return Center(
                                 child: CircularProgressIndicator(
@@ -75,25 +84,39 @@ class MainPage extends StatelessWidget {
                                         padding: EdgeInsets.all(10),
                                         margin: EdgeInsets.only(right: 10),
                                         height: 300,
-                                        width: 350,
-                                        child: Column(
+                                        width: double.infinity,
+                                        child: Row(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             ClipRRect(
                                               borderRadius: BorderRadius.circular(15),
                                               child: CachedNetworkImage(
                                                 errorWidget: (ctx, string, stk){
-                                                  return Image.asset('assets/images/noImage.jpg');
+                                                  return Image.asset(
+                                                      'assets/images/noImage.jpg', fit: BoxFit.cover,);
                                                 },
                                                 imageUrl: newsData[index].media,
-                                                height: 200,
-                                                width: 350,
+                                                height: 300,
+                                                width: 170,
                                                 fit: BoxFit.cover,),
                                             ),
-                                            SizedBox(height: 10,),
-                                            Text(newsData[index].title, maxLines: 2,),
-                                            SizedBox(height: 5,),
-                                            Text(newsData[index].published_date)
+                                            SizedBox(width: 10,),
+                                            Expanded(
+                                              child: Padding(
+                                                padding: const EdgeInsets.symmetric(vertical: 10),
+                                                child: Column(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  children: [
+                                                    Text(newsData[index].title, maxLines: 2,),
+                                                    SizedBox(height: 5,),
+                                                    Text(newsData[index].summary, maxLines: 9,),
+                                                    SizedBox(height: 5,),
+                                                    Text(newsData[index].published_date)
+                                                  ],
+                                                ),
+                                              ),
+                                            )
+
                                           ],
                                         ));
                                   }

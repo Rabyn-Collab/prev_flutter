@@ -13,7 +13,6 @@ TabBarWidget(this.query);
     return  Consumer(
       builder: (context, ref, child) {
         final newsData = ref.watch(newsProvider(query));
-        print(newsData);
         if (newsData.isEmpty) {
           return Center(
             child: CircularProgressIndicator(

@@ -38,6 +38,7 @@ dependencies:
   flutter_riverpod: ^1.0.4
   get: ^4.6.3
   cached_network_image: ^3.2.1
+  webview_flutter: ^3.0.4
 
 dev_dependencies:
   flutter_test:

@@ -23,8 +23,23 @@ class NewsService{
               }
           )
       );
-      final data = (response.data['articles'] as List).map((news) => News.fromJson(news)).toList();
-      return data;
+      if(response.data['status'] == 'No matches for your search.'){
+         return [
+           News(
+               author: '',
+               link: '',
+               media: '',
+               published_date: '',
+               summary: '',
+               title: 'No matches for your search'
+           )
+         ];
+      }else{
+        final data = (response.data['articles'] as List).map((news) => News.fromJson(news)).toList();
+        return data;
+      }
+
+
 
     }on DioError catch (err){
       print(err);
@@ -37,7 +52,7 @@ class NewsService{
  static Future<List<News>>  getNews() async{
     final dio = Dio();
     try{
-      await Future.delayed(Duration(seconds: 2));
+      await Future.delayed(Duration(seconds: 4));
       final response = await dio.get(Api.searchNewsApi,
       queryParameters: {
         'q': 'science',

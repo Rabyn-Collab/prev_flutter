@@ -36,4 +36,3 @@ factory Movie.fromJson(Map<String, dynamic> json){
 }
 
 
-

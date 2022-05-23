@@ -39,6 +39,9 @@ dependencies:
   get: ^4.6.3
   cached_network_image: ^3.2.1
   webview_flutter: ^3.0.4
+  youtube_player_flutter: ^8.1.0
+  shared_preferences: ^2.0.15
+  flutter_offline: ^2.1.0
 
 dev_dependencies:
   flutter_test:

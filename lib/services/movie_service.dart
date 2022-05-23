@@ -37,8 +37,16 @@ class MovieService{
            'page': page,
            'query': query
          });
-         final data = (response.data['results'] as List).map((e) => Movie.fromJson(e)).toList();
-         return data;
+         if((response.data['results'] as List).isEmpty){
+           final data = [Movie(
+               title: 'no-data',
+               overview: '', poster_path: '', release_date: '', vote_average: '')];
+           return data;
+         }else{
+           final data = (response.data['results'] as List).map((e) => Movie.fromJson(e)).toList();
+           return data;
+         }
+
 
        }on DioError catch (err){
          print(err);

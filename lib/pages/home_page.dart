@@ -2,14 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:project_start/api.dart';
 import 'package:project_start/provider/movie_provider.dart';
-
+import 'package:cached_network_image/cached_network_image.dart';
 
 
 
 
 class HomePage extends StatelessWidget {
-  const HomePage({Key? key}) : super(key: key);
 
+
+  final searchController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
@@ -31,6 +32,11 @@ class HomePage extends StatelessWidget {
                       children: [
                         Expanded(
                           child: TextFormField(
+                            controller: searchController,
+                            onFieldSubmitted: (val){
+                              ref.read(movieProvider.notifier).searchMovie(val);
+                              searchController.clear();
+                            },
                             decoration: InputDecoration(
                               contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                               hintText: 'search movies',
@@ -40,7 +46,7 @@ class HomePage extends StatelessWidget {
                         ),
                         PopupMenuButton(
                           onSelected: (val){
-                            print(val);
+                            ref.read(movieProvider.notifier).updateCategory(val as String);
                           },
                           icon: Icon(Icons.menu),
                             itemBuilder: (context) => [
@@ -63,9 +69,20 @@ class HomePage extends StatelessWidget {
                     SizedBox(height: 10,),
                     Expanded(
                       child: Container(
-                        child: data.movies.isEmpty ? Center(
+                        child: data.movies.isEmpty ?  Center(
                           child: CircularProgressIndicator(
                             color: Colors.purple,
+                          ),
+                        ): data.movies[0].title == 'no-data' ? Container(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text('Try using another keyword'),
+                              ElevatedButton(
+                                  onPressed: (){
+                                    ref.refresh(movieProvider.notifier);
+                                  }, child: Text('Refresh'))
+                            ],
                           ),
                         ):
                         GridView.builder(
@@ -78,7 +95,11 @@ class HomePage extends StatelessWidget {
                             ),
                             itemBuilder: (context, index){
                             final movie = data.movies[index];
-                               return Image.network('https://image.tmdb.org/t/p/w600_and_h900_bestv2/${movie.poster_path}');
+                               return  CachedNetworkImage(
+                                 errorWidget: (ctx, st, d){
+                                   return Image.asset('assets/images/noImage.jpg');
+                                 },
+                                  imageUrl: 'https://image.tmdb.org/t/p/w600_and_h900_bestv2/${movie.poster_path}');
                             }
                         ),
                       ),

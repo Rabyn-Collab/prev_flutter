@@ -39,6 +39,7 @@ class MovieService{
          });
          if((response.data['results'] as List).isEmpty){
            final data = [Movie(
+             id: 0,
                title: 'no-data',
                overview: '', poster_path: '', release_date: '', vote_average: '')];
            return data;

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:get/get.dart';
 import 'package:project_start/api.dart';
+import 'package:project_start/pages/detail_page.dart';
 import 'package:project_start/provider/movie_provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
@@ -85,22 +87,39 @@ class HomePage extends StatelessWidget {
                             ],
                           ),
                         ):
-                        GridView.builder(
-                          itemCount: data.movies.length,
-                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 3,
-                              mainAxisSpacing: 5,
-                              crossAxisSpacing: 5,
-                             childAspectRatio: 2/3,
-                            ),
-                            itemBuilder: (context, index){
-                            final movie = data.movies[index];
-                               return  CachedNetworkImage(
-                                 errorWidget: (ctx, st, d){
-                                   return Image.asset('assets/images/noImage.jpg');
-                                 },
-                                  imageUrl: 'https://image.tmdb.org/t/p/w600_and_h900_bestv2/${movie.poster_path}');
+                        NotificationListener(
+                          onNotification: (onNotification) {
+                            if (onNotification is ScrollEndNotification) {
+                              final before = onNotification.metrics.extentBefore;
+                              final max = onNotification.metrics.maxScrollExtent;
+                              if (before == max) {
+                                   ref.read(movieProvider.notifier).loadMore();
+                              }
                             }
+                            return true;
+                          },
+                          child: GridView.builder(
+                            itemCount: data.movies.length,
+                              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 3,
+                                mainAxisSpacing: 5,
+                                crossAxisSpacing: 5,
+                               childAspectRatio: 2/3,
+                              ),
+                              itemBuilder: (context, index){
+                              final movie = data.movies[index];
+                                 return  InkWell(
+                                   onTap: (){
+                                     Get.to(() => DetailPage(movie), transition: Transition.leftToRight);
+                                   },
+                                   child: CachedNetworkImage(
+                                     errorWidget: (ctx, st, d){
+                                       return Image.asset('assets/images/noImage.jpg');
+                                     },
+                                      imageUrl: 'https://image.tmdb.org/t/p/w600_and_h900_bestv2/${movie.poster_path}'),
+                                 );
+                              }
+                          ),
                         ),
                       ),
                     ),

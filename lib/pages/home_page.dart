@@ -111,7 +111,10 @@ class HomePage extends StatelessWidget {
                                 final max = onNotification.metrics
                                     .maxScrollExtent;
                                 if (before == max) {
-                                  // ref.read(movieProvider.notifier).loadMore();
+                                  if(isConnected){
+                                     ref.read(movieProvider.notifier).loadMore();
+                                  }
+
                                 }
                               }
                               return true;
@@ -177,7 +180,7 @@ class HomePage extends StatelessWidget {
                                   final max = onNotification.metrics
                                       .maxScrollExtent;
                                   if (before == max) {
-                                   // ref.read(movieProvider.notifier).loadMore();
+                                    ref.read(movieProvider.notifier).loadMore();
                                   }
                                 }
                                 return true;

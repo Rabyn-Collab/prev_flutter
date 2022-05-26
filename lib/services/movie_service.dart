@@ -29,7 +29,7 @@ class MovieService{
              'api_key': '2a0f926961d00c667e191a21c14461f8',
              'page': 1
            });
-           await prefs.setString('movie', jsonEncode(response.data));
+           await prefs.setString('movie', jsonEncode(response1.data));
          }
 
          final data = (response.data['results'] as List).map((e) => Movie.fromJson(e)).toList();
